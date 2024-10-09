@@ -1,3 +1,4 @@
+let myChart;
 document.getElementById('search-form').addEventListener('submit', function (event) {
     event.preventDefault();
     
@@ -33,27 +34,28 @@ function displayResults(data) {
 }
 
 function displayChart(data) {
-    // Input: data (object) - contains the following keys:
-    //        - documents (list) - list of documents
-    //        - indices (list) - list of indices   
-    //        - similarities (list) - list of similarities
-    // TODO: Implement function to display chart here
-    //       There is a canvas element in the HTML file with the id 'similarity-chart'
-    
+    const labels = data.indices.map(index => `Doc ${index}`);
+    const similarities = data.similarities;
+
+    if (myChart) {
+        // Update the data and labels
+        myChart.data.labels = labels;
+        myChart.data.datasets[0].data = similarities;
+        myChart.update();
+    } else {
         const ctx = document.getElementById('similarity-chart').getContext('2d');
-        const chartData = {
-            labels: data.indices.map(index => `Doc ${index}`), // Document indices as labels
-            datasets: [{
-                label: 'Similarity Scores',
-                data: data.similarities,
-                backgroundColor: 'rgba(75, 192, 192, 0.2)',
-                borderColor: 'rgba(75, 192, 192, 1)',
-                borderWidth: 1
-            }]
-        };
-        const myChart = new Chart(ctx, {
-            type: 'bar', // You can choose other chart types like 'line', 'pie', etc.
-            data: chartData,
+        myChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Similarity Scores',
+                    data: similarities,
+                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    borderWidth: 1
+                }]
+            },
             options: {
                 scales: {
                     y: {
@@ -62,4 +64,5 @@ function displayChart(data) {
                 }
             }
         });
+    }
 }
