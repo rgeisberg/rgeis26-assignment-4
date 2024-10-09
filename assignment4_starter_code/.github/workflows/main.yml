@@ -1,0 +1,32 @@
+name: Python Application
+
+on:
+  push:
+    branches:
+      - main  # Change this to your default branch if different
+  pull_request:
+    branches:
+      - main  # Change this to your default branch if different
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.12'  # Specify your Python version
+
+    - name: Install dependencies
+      run: |
+        make install
+
+    - name: Run Flask application
+      run: |
+        make run &
+        sleep 10  # Wait for the server to start
+        # You can add any test commands here if needed
